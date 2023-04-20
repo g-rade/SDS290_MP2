@@ -1,6 +1,10 @@
 ---
 title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
+<<<<<<< HEAD
 date: "2023-04-20"
+=======
+>>>>>>> df7ff9f4126a56a25aabf2a81ed5df1124853fed
 output: html_document
 ---
+try 
