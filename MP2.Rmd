@@ -3,4 +3,21 @@ title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
 ---
-try 
+```{r, include=F, warning=F, echo=F, eval= TRUE}
+library(tidyverse)
+library(rio)
+library(asbio)
+library(janitor)
+library(readr)
+library(Stat2Data)
+```
+
+```{r, include=F, warning=F, echo=F}
+agegb <- import("MP2age_behavior.csv")
+```
+
+```{r}
+agegb_new <- agegb |>
+  filter(!row_number() %in% c(1, 2))
+```
+
