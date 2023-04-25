@@ -19,6 +19,7 @@ agegb <- import("MP2_agebehaviorFINAL.csv")
 agegb[agegb == ''] <- NA
 ```
 
+<<<<<<< HEAD
 ```{r, include=F, warning=F, echo=F}
 agegb_new <- agegb |>
   clean_names() |>
@@ -53,6 +54,8 @@ agegb_new <- agegb_new |>
 df <- import("MP2_agebehaviorFINAL.csv")
 df$condition <- as.factor(df$condition)
 ```
+=======
+>>>>>>> 6de29abcb77ca0fb3c638d84f17bb803d0452180
 
 # Introduction
 
