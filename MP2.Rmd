@@ -14,8 +14,8 @@ library(car)
 ```
 
 ```{r, include=F, warning=F, echo=F}
-agegb <- import("MP2_agebehaviorFINAL.csv")
-agegb[agegb == ''] <- NA
+df <- import("MP2_agebehaviorFINAL.csv")
+df[df == ''] <- NA
 ```
 
 
@@ -56,10 +56,11 @@ We begin with checking the conditions for Anova testing. We know that the respon
 ### Constant Variance
 
 ```{r, warning=F, echo=F}
-qplot(x=condition, y=opinion, data=df, ylab="Rating the Liking of Sam",
+qplot(x=condition, y=opinion, data=df, ylab="Ban Football in High School",
       xlab='Treatment', geom="boxplot") +
   theme(axis.title = element_text(size = 15))
 ```
+
 ```{r, echo=F}
 leveneTest(opinion~condition, data=df)
 ```
