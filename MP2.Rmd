@@ -3,46 +3,116 @@ title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
 ---
-```{r, include=F, warning=F, echo=F, eval= TRUE}
+```{r, include=F, warning=F, echo=F}
 library(tidyverse)
 library(rio)
 library(asbio)
-library(janitor)
 library(readr)
 library(Stat2Data)
+library(car)
 ```
 
 ```{r, include=F, warning=F, echo=F}
-agegb <- import("MP2NEW_agebehavior.csv")
-agegb[agegb == ''] <- NA
+df <- import("CleanedData.csv")
+df$condition <- as.factor(df$condition)
 ```
 
-```{r, include=F, warning=F, echo=F}
-agegb_new <- agegb |>
-  clean_names() |>
-  # Recode agreement levels into numbers
-  filter(!row_number() %in% c(1, 2)) |>
-  mutate_at(c("ten_bad_1", "ten_bad_2", "forty_five_bad_1", "forty_five_bad_2","forty_fivegood_1", "forty_fivegood_2", "ten_good_1", "ten_good_2"), 
-            ~as.numeric(recode(.,
-                   "Strong Disagree" = 1,
-                   "Disagree" = 2,
-                   "Neither Agree nor Disagree" = 3,
-                   "Agree" = 4,
-                   "Strong Agree" =5))) |>
-  # combining participant responses to the statement: "Sam's behavior is good" into single column "agreement"
-  # combining participant responses to the statement: "Sam seems likeable" into single column "opinion"
-  gather(condition1, agreement, c("ten_bad_1", "forty_five_bad_1","forty_fivegood_1", "ten_good_1"), factor_key=TRUE) |>
-  gather(condition2, opinion, c("ten_bad_2","forty_five_bad_2", "forty_fivegood_2", "ten_good_2")) |>
-  unite(condition, condition1, condition2, sep = "", remove=F) |>
-  select(q2, q3, q2_2, condition, agreement, opinion) |>
-  drop_na("agreement", "opinion") |>
-  rename(gender = q2, age = q3, ethnicity = q2_2)
+# Introduction
 
-agegb_new$condition[agegb_new$condition == 'ten_bad_1ten_bad_2'] <- '10 Bad'
-agegb_new$condition[agegb_new$condition == 'forty_five_bad_1forty_five_bad_2'] <- '45 Bad'
-agegb_new$condition[agegb_new$condition == 'ten_good_1ten_good_2'] <- '10 Good'
-agegb_new$condition[agegb_new$condition == 'forty_fivegood_1forty_fivegood_2'] <- '45 Good'
+# Methodology
+
+# Results
+
+## Checking Anova Conditions
+
+We begin with checking the conditions for Anova testing. We know that the response variable, how the much the participant likes Sam, is continuous while the factors, Sam's 'good' or 'bad' actions and Sam's age, are categorical, which satisfies the condition about the types of variables. We then check for constant variance.
+
+### Constant Variance
+
+```{r, warning=F, echo=F}
+qplot(x=condition, y=opinion, data=df, ylab="Rating the Liking of Sam",
+      xlab='Treatment', geom="boxplot") +
+  theme(axis.title = element_text(size = 15))
+```
+```{r, echo=F}
+leveneTest(opinion~condition, data=df)
+```
+
+```{r, echo=F}
+df |>
+  group_by(condition) |>
+  summarise(Group_mean=mean(opinion), Sample_size=n(), Standard_dev=sd(opinion))
+```
+
+### Normality
+```{r, echo=F, warning=F}
+ggplot(df, aes(x=opinion, color=condition))+geom_density()
+```
+There are clear violations of normality for all four groups.
+
+### Transformation
+
+We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the mean and standard deviations for the response variable, liking of Sam, across the treatment groups.
+
+```{r, echo=F, message=F}
+summary_stats <- df |>
+  group_by(condition) |>
+  summarise(mean=log(mean(opinion)), sd=log(sd(opinion)))
+
+ggplot(summary_stats, aes(x=mean, y=sd), ylab="Log(sd)", xlab="Log(mean)") +
+  geom_point() +
+  geom_smooth(method="lm", se=F)
+```
+
+Using the means and standard deviations, we create a linear model and look at the slope.
+
+```{r, echo=F}
+lin <- lm(sd~mean, data=summary_stats)
+summary(lin)
+```
+
+The slope is -0.62 and so 1-slope is 1.62, thus, we can try to see if a reciprocals transformation can help.
+
+```{r, echo=F}
+df <- df |>
+  mutate(recip_opinion = 1/opinion)
+```
+
+```{r, echo=F, warning=F}
+ggplot(df, aes(x=recip_opinion, color=condition))+geom_density()
+```
+The distributions are still not normal so a reciprocals transformation did not help. Therefore, the condition for normality is violated. However, we will continue with Anova testing and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
+
+## Anova Testing
+```{r, echo=F}
+# will create anova model called liking.aov
 ```
 
 
-\
+## Kruskal Wallis Test
+
+## Checking Residuals
+
+We want to check the residuals to further evaluate our model.
+
+```{r, echo=F, warning=F}
+# resid <-  resid(liking.aov)
+# 
+# Model <- data.frame(Fitted = fitted(liking.aov), 
+#                     Residuals = resid(liking.aov),
+#                     Treatment = df$condition,
+#                     Observed=df$opinion)
+```
+
+```{r, echo=F, warning=F}
+# ggplot(Model, aes(x=Treatment, y=Residuals)) + geom_point()
+```
+
+
+
+```{r, echo=F, warning=F}
+# ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
+```
+
+# Conclusion
+
