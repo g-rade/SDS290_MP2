@@ -3,4 +3,46 @@ title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
 ---
-try 
+```{r, include=F, warning=F, echo=F, eval= TRUE}
+library(tidyverse)
+library(rio)
+library(asbio)
+library(janitor)
+library(readr)
+library(Stat2Data)
+```
+
+```{r, include=F, warning=F, echo=F}
+agegb <- import("MP2NEW_agebehavior.csv")
+agegb[agegb == ''] <- NA
+```
+
+```{r, include=F, warning=F, echo=F}
+agegb_new <- agegb |>
+  clean_names() |>
+  # Recode agreement levels into numbers
+  filter(!row_number() %in% c(1, 2)) |>
+  mutate_at(c("ten_bad_1", "ten_bad_2", "forty_five_bad_1", "forty_five_bad_2","forty_fivegood_1", "forty_fivegood_2", "ten_good_1", "ten_good_2"), 
+            ~as.numeric(recode(.,
+                   "Strong Disagree" = 1,
+                   "Disagree" = 2,
+                   "Neither Agree nor Disagree" = 3,
+                   "Agree" = 4,
+                   "Strong Agree" =5))) |>
+  # combining participant responses to the statement: "Sam's behavior is good" into single column "agreement"
+  # combining participant responses to the statement: "Sam seems likeable" into single column "opinion"
+  gather(condition1, agreement, c("ten_bad_1", "forty_five_bad_1","forty_fivegood_1", "ten_good_1"), factor_key=TRUE) |>
+  gather(condition2, opinion, c("ten_bad_2","forty_five_bad_2", "forty_fivegood_2", "ten_good_2")) |>
+  unite(condition, condition1, condition2, sep = "", remove=F) |>
+  select(q2, q3, q2_2, condition, agreement, opinion) |>
+  drop_na("agreement", "opinion") |>
+  rename(gender = q2, age = q3, ethnicity = q2_2)
+
+agegb_new$condition[agegb_new$condition == 'ten_bad_1ten_bad_2'] <- '10 Bad'
+agegb_new$condition[agegb_new$condition == 'forty_five_bad_1forty_five_bad_2'] <- '45 Bad'
+agegb_new$condition[agegb_new$condition == 'ten_good_1ten_good_2'] <- '10 Good'
+agegb_new$condition[agegb_new$condition == 'forty_fivegood_1forty_fivegood_2'] <- '45 Good'
+```
+
+
+\
