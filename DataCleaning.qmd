@@ -14,7 +14,7 @@ library(Stat2Data)
 ```
 
 ```{r, include=F, warning=F, echo=F}
-agegb <- import("MP2NEW_agebehavior.csv")
+agegb <- import("MP2_agebehaviorFINAL.csv")
 agegb[agegb == ''] <- NA
 ```
 
@@ -43,8 +43,11 @@ agegb_new$condition[agegb_new$condition == 'ten_bad_1ten_bad_2'] <- '10 Bad'
 agegb_new$condition[agegb_new$condition == 'forty_five_bad_1forty_five_bad_2'] <- '45 Bad'
 agegb_new$condition[agegb_new$condition == 'ten_good_1ten_good_2'] <- '10 Good'
 agegb_new$condition[agegb_new$condition == 'forty_fivegood_1forty_fivegood_2'] <- '45 Good'
+
+agegb_new <- agegb_new |>
+  separate(condition, into = c("v_age", "behavior"), remove = FALSE, extra = "merge")
 ```
 
 ```{r}
-write.csv(agegb_new, "CleanedData.csv", row.names=FALSE)
+write.csv(agegb_new, "MP2_agebehaviorFINAL.csv", row.names=FALSE)
 ```
