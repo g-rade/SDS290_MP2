@@ -1,0 +1,47 @@
+"gender","age","ethnicity","condition","agreement","opinion"
+"Cis female","18-19 years old","White","10 Bad",2,2
+"Cis female","18-19 years old","White","10 Bad",3,3
+"Non-binary / third gender","20-21 years old","Asian","10 Bad",1,2
+"Cis female","22 - 24 years old","Asian","10 Bad",2,2
+"Other","20-21 years old","Asian,White","10 Bad",1,1
+"Cis female","22 - 24 years old","White","10 Bad",1,1
+"Non-binary / third gender","18-19 years old","White","10 Bad",1,3
+"Non-binary / third gender","18-19 years old","White","10 Bad",2,2
+"Cis female","18-19 years old","White","10 Bad",3,3
+"Cis female","20-21 years old","White","10 Bad",2,4
+"Cis female","Older than 24 years old","Black or African American,White","10 Bad",2,3
+"Non-binary / third gender","20-21 years old","White","45 Bad",1,3
+"Cis female","20-21 years old","Hispanic or Latino","45 Bad",2,1
+"Cis female","20-21 years old","White","45 Bad",2,3
+"Cis female","20-21 years old","White","45 Bad",3,3
+"Other","20-21 years old","Asian","45 Bad",1,2
+"Cis female","22 - 24 years old","Black or African American","45 Bad",5,5
+"Cis female","20-21 years old","Asian,White","45 Bad",2,2
+"Cis female","20-21 years old","Asian","45 Bad",2,3
+"Cis female","20-21 years old","White","45 Bad",1,2
+"Cis female","18-19 years old","Hispanic or Latino","45 Bad",2,2
+"Other","20-21 years old","Asian,White","45 Bad",1,1
+"Cis female","18-19 years old","White","45 Good",4,4
+"Cis female","18-19 years old","White","45 Good",5,5
+"Cis female","20-21 years old","Asian","45 Good",4,4
+"Cis female","20-21 years old","White","45 Good",4,4
+"Cis female","20-21 years old","Asian","45 Good",5,5
+"Cis female","22 - 24 years old","Asian","45 Good",4,4
+"Trans male","20-21 years old","White","45 Good",5,5
+"Cis female","20-21 years old","White","45 Good",4,4
+"Cis female","18-19 years old","Asian","45 Good",4,4
+"Cis female","18-19 years old","White","45 Good",4,4
+"Cis female","18-19 years old","White","45 Good",5,5
+"Cis female","22 - 24 years old","Asian","10 Good",5,4
+"Cis female","18-19 years old","White","10 Good",5,5
+"Cis female","20-21 years old","White","10 Good",5,4
+"Genderfluid","20-21 years old","White","10 Good",5,5
+"Cis female","20-21 years old","Asian","10 Good",4,5
+"Cis female","20-21 years old","Asian","10 Good",5,4
+"Cis female","20-21 years old","Hispanic or Latino","10 Good",4,4
+"Non-binary / third gender","20-21 years old","Asian,White","10 Good",4,4
+"Cis female","18-19 years old","Black or African American","10 Good",5,5
+"Cis female","20-21 years old","Asian","10 Good",1,1
+"Cis female","18-19 years old","Black or African American","10 Good",4,4
+"Cis female","22 - 24 years old","White","10 Good",5,5
+"Cis female","22 - 24 years old","White","10 Good",4,4
