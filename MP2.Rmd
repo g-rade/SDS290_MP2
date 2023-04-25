@@ -20,7 +20,31 @@ df$condition <- as.factor(df$condition)
 
 # Introduction
 
+This project aims to examine how peoples’ opinion of a character in a vignette changes based on the stated age and the described behavior of that character.   
+	
+Respondents read a vignette about a generic character, who performs the action of baking a cake while being described as a certain age and exhibiting either good or bad behavior. Two groups read vignettes where the character is stated to be a child, while two read vignettes where the character is an adult. Additionally, two groups read vignettes where the character exhibits bad behavior while two read vignettes where the character exhibits good behavior. A total of four respondent groups will read vignettes that contain one combination of age and behavior. All four combinations of age and behavior will be represented in the survey and are randomly assigned to respondents.
+
+
+## Hypotheses
+
+1. Respondents will exhibit more positive attitudes towards the vignette character of younger age. 
+
+  a. Respondents who have viewed the vignettes featuring Sam as a 10 year old child will give higher levels of agreement to the statement “I like Sam”. 
+
+2. Respondents will exhibit less positive attitudes towards the vignette character who displays negative behavior. 
+
+  a. Respondents who have viewed the vignette featuring Sam leaving a mess in the kitchen and not sharing the cake will give lower levels of agreement to the statement “I like Sam”.
+
+3. Age will have a moderating effect on the attitudes of respondents based on behavior type. 
+
+  a. Respondents will exhibit the most positive attitude towards the vignette character of younger age and positive behavior.
+
+
 # Methodology
+
+We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of [] complete, consenting responses. The two treatment factors, age and behavior, were randomized by a series of vignettes. Each factor combination has [] respondents. The dependent variable is the opinion of the character, Sam,  in the vignette, ascertained via a five-point likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement. 
+
+Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette, and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. Four vignettes capture the total number of combinations of the two variables.
 
 # Results
 
@@ -116,5 +140,5 @@ We want to check the residuals to further evaluate our model.
 ```
 
 # Conclusion
->>>>>>> d84fe0b2f541a5d211cb43f8bc663feefd7bb278
+
 
