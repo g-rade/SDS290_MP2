@@ -15,7 +15,9 @@ library(car)
 
 ```{r, include=F, warning=F, echo=F}
 df <- import("MP2_agebehaviorFINAL.csv")
-df[df == ''] <- NA
+df$condition <- as.factor(df$condition)
+df$v_age <- as.factor(df$v_age)
+df$behavior <- as.factor(df$behavior)
 ```
 
 
