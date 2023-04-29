@@ -2,6 +2,7 @@
 title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
+output: pdf_document
 ---
 ```{r, warning = F, message = F, echo = F}
 library(tidyverse)
