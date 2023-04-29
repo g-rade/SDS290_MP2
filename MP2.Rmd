@@ -3,7 +3,7 @@ title: "MP2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
 ---
-```{r, include=F, warning=F, echo=F}
+```{r, warning = F, message = F, echo = F}
 library(tidyverse)
 library(rio)
 library(asbio)
@@ -12,7 +12,7 @@ library(Stat2Data)
 library(car)
 ```
 
-```{r, include=F, warning=F, echo=F}
+```{r, warning = F, message = F, echo = F}
 df <- import("MP2_agebehaviorFINAL.csv")
 df$condition <- as.factor(df$condition)
 df$v_age <- as.factor(df$v_age)
@@ -56,17 +56,17 @@ We begin with checking the conditions for Anova testing. We know that the respon
 
 ### Constant Variance
 
-```{r, warning=F, echo=F}
+```{r, warning = F, message = F, echo = F}
 qplot(x=condition, y=opinion, data=df, ylab="Ban Football in High School",
       xlab='Treatment', geom="boxplot") +
   theme(axis.title = element_text(size = 15))
 ```
 
-```{r, echo=F}
+```{r, warning = F, message = F, echo = F}
 leveneTest(opinion~condition, data=df)
 ```
 
-```{r, echo=F}
+```{r, warning = F, message = F, echo = F}
 df |>
   group_by(condition) |>
   summarise(Group_mean=mean(opinion), Sample_size=n(), Standard_dev=sd(opinion))
@@ -75,7 +75,7 @@ df |>
 The box-plot and the table of  standard deviations show that there is a slight violation of the constant variance assumption. However, the Levene's Test idicates that the variance across groups is not statistically different, so we will proceed. 
 
 ### Normality
-```{r, echo=F, warning=F}
+```{r, warning = F, message = F, echo = F}
 ggplot(df, aes(x=opinion, color=condition))+geom_density()
 ```
 There are clear violations of normality for all four groups.
@@ -84,7 +84,7 @@ There are clear violations of normality for all four groups.
 
 We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the mean and standard deviations for the response variable, liking of Sam, across the treatment groups.
 
-```{r, echo=F, message=F}
+```{r, warning = F, message = F, echo = F}
 summary_stats <- df |>
   group_by(condition) |>
   summarise(mean=log(mean(opinion)), sd=log(sd(opinion)))
@@ -95,19 +95,19 @@ ggplot(summary_stats, aes(x=mean, y=sd), ylab="Log(sd)", xlab="Log(mean)") +
 
 Using the means and standard deviations, we create a linear model and look at the slope.
 
-```{r, echo=F}
+```{r, warning = F, message = F, echo = F}
 lin <- lm(sd~mean, data=summary_stats)
 summary(lin)
 ```
 
 The slope is -0.62 and so 1-slope is 1.62, thus, we can try to see if a reciprocals transformation can help.
 
-```{r, echo=F}
+```{r, warning = F, message = F, echo = F}
 df <- df |>
   mutate(recip_opinion = 1/opinion)
 ```
 
-```{r, echo=F, warning=F}
+```{r,warning = F, message = F, echo = F}
 ggplot(df, aes(x=recip_opinion, color=condition))+geom_density()
 ```
 
@@ -117,16 +117,16 @@ The distributions are still not normal so a reciprocals transformation did not h
 
 First, we will assess the data for the appearance of interaction between our dependent variables. 
 
-```{r}
+```{r, warning = F, message = F, echo = F}
 TukeyNonaddPlot(opinion~as.factor(v_age)+behavior, data = df)
 interaction.plot(df$v_age, df$behavior, df$opinion, xlab = "Vignette Age", ylab = "Mean Opinion of Sam", trace.label = "Vignette Behavior")
 ```
 
 The Tukey plot has a nonzero slope, which indicates that there is evidence of non-additivity. However, the interaction plot shows that the lines for Good and Bad behavior do not intersect but have slopes of opposite signs. We will fit both an additive and interaction model.
 
-```{r, echo=F}
+```{r, warning = F, message = F, echo = F}
 liking_aov_add <- aov(opinion~v_age+behavior, data = df)
-summary(liking_aov)
+summary(liking_aov_add)
 
 liking_aov_inter <- aov(opinion~v_age*behavior, data = df)
 summary(liking_aov_inter)
@@ -135,38 +135,71 @@ summary(liking_aov_inter)
 
 In both the additive and interactive models, we see that the mean opinions of the vignette character are different across the levels of the behavior variable (Good/Bad). The F-value is large and the p-value is smaller than 0.05, which provides sufficient evidence to reject the null hypothesis. From this, we can conclude, that the behavior described in the vignette influences the opinion of the vignette character of Smith College students. We do not have sufficient evidence to conclude that the described age of the vignette character has any affect on Smithie's mean opinion of Sam. There is also not sufficent evidence that the vignette character age variable interacts with the behavior variable.
 
-## Kruskal Wallis Test
+### Kruskal Wallis Test
 
-Given the violation of the normality assumption, we will vertify our results with a non-parametric test. Since we have more than two groups in our analysis, we will use a Kruskal-Wallis test. 
+Given the violation of the normality assumption, we will verify our results with a non-parametric test. Since we have more than two groups in our analysis, we will use a Kruskal-Wallis test. To do so, we will conduct separate tests for each of our explanatory variables.
 
-```{r}
-kruskal.test(opinion~v_age+behavior, data = df)
+```{r, warning = F, message = F, echo = F}
+kruskal.test(opinion~behavior, data = df)
+kruskal.test(opinion~v_age, data = df)
 ```
 
-## Regression
+We see that the behavior variable once again is signficant while the vignette age variable is not. Our results from the ANOVA are confirmed using non-parametric methods. 
 
-## Checking Residuals
+### Pairwise Comparisons
+
+To test our pairwise comparisons, we will use both a TukeyHSD test and a Bonferonni Adjustment. The Tukey test will condict pairwise comparisons for both of our explanatory variables, while the Bonferroni test will conduct pairwiase comparisons for each of the four groups using the condition variable, which indicates which combination of age and behavior was described in the vignette for each respondent. 
+
+```{r, warning = F, message = F, echo = F}
+TukeyHSD(liking_aov_add)
+bonfCI(df$opinion, df$condition, conf.level = 0.95)
+```
+
+The Tukey HSD test shows that the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a signficiant predictor of mean opinion of the vignette character, but not stated character age. 
+
+The Bonferroni Adjustment also supports this conclusion. We see that for each of teh four significant pairwise comparisons, the behavior is different (i.e. Good vs. Bad comparison). For two of the signficant pairwise comparisons, the age of the character varies, but does not for the other two. This also supports the conclusion that the described type of behavior in the vignette influences the mean opinion of Sam. 
+
+
+## Post-Modeling Condition Checks
 
 We want to check the residuals to further evaluate our model.
 
-```{r, echo=F, warning=F}
-# resid <-  resid(liking.aov)
-# 
-# Model <- data.frame(Fitted = fitted(liking.aov), 
-#                     Residuals = resid(liking.aov),
-#                     Treatment = df$condition,
-#                     Observed=df$opinion)
+```{r, echo=F, warning=F, messafe = F}
+resid <-  resid(liking_aov_add)
+
+Model <- data.frame(Fitted = fitted(liking_aov_add), 
+                     Residuals = resid(liking_aov_add),
+                     Treatment = df$condition,
+                     Observed=df$opinion)
 ```
 
-```{r, echo=F, warning=F}
-# ggplot(Model, aes(x=Treatment, y=Residuals)) + geom_point()
+```{r, echo=F, warning=F, message = F}
+plot(liking_aov_add, which = 1)
+plot(liking_aov_add, which = 2)
 ```
 
+The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. We also see that the residuals are not symmetrical from the density plot. 
 
-
-```{r, echo=F, warning=F}
-# ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
+```{r, echo=F, warning=F, message = F}
+ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
+
+### Effect Sizes
+
+```{r, warning = F, message = F, echo = F}
+mse <- 0.91
+
+tengb <- -1.72527/0.91
+tenbffb <- 0.1619/0.91
+tengffb <- 1.88718/0.91
+tenbffg <- -2.07143/0.91
+tengffg <- -0.34615/0.91
+ffbffg <- -2.23333/0.91
+
+list("10 Bad vs. 10 Good" = tengb, "10 Bad vs. 45 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "10 Bad vs. 45 Good" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Bad vs. 45 Good" = ffbffg) 
+```
+
+The groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
 
 # Conclusion
 
