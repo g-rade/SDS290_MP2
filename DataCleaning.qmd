@@ -14,7 +14,7 @@ library(Stat2Data)
 ```
 
 ```{r, include=F, warning=F, echo=F}
-agegb <- import("MP2_agebehaviorFINAL.csv")
+agegb <- import("MP2_SDS290_rawdata_final.csv")
 agegb[agegb == ''] <- NA
 ```
 
@@ -29,7 +29,7 @@ agegb_new <- agegb |>
                    "Disagree" = 2,
                    "Neither Agree nor Disagree" = 3,
                    "Agree" = 4,
-                   "Strong Agree" =5))) |>
+                   "Strong Agree" = 5))) |>
   # combining participant responses to the statement: "Sam's behavior is good" into single column "agreement"
   # combining participant responses to the statement: "Sam seems likeable" into single column "opinion"
   gather(condition1, agreement, c("ten_bad_1", "forty_five_bad_1","forty_fivegood_1", "ten_good_1"), factor_key=TRUE) |>
