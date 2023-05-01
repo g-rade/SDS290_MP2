@@ -23,7 +23,11 @@ df$behavior <- as.factor(df$behavior)
 
 # Introduction
 
-This project aims to examine how peoples’ opinion of a character in a vignette changes based on the stated age and the described behavior of that character.   
+increasing age brings changes in cognition and emotion that have impacts on subjective well-being, social relationships, decision making, and self-control.
+
+It's usually pretty obvious what adults can do that children can't. Adults can drive, pay for what they want, work, drink alcohol, travel on their own, and so on. If a child does these things, then it is either illegal or socially frowned upon. Maybe less commonly discussed are what children can do that adults can't or rather shouldn't. Children can take off their clothes in public, speak at high volumes despite being indoors, pee in the swimming pool, have nap times in school, and many other things that are usually things that, if done by adults, would be inappropriate or seen as odd.
+
+When taking another look at these actions, it's not that adults or children are strictly unable to do all of them (yes, children can drive if there are cars designed that way but we can't say that they can drive *well*), but rather that societal norms and regulations restrict people based on their ages. With increasing age comes better decision making ability and self control [@], so it makes sense that it is societally more acceptable for children to act immaturely or inappropriately compared to adults. Even so, just how much of an influence does a person's age and behavior have on others' opinions of that person? This project aims to study this by examining how peoples’ opinion of a character in a vignette changes based on the stated age and the described behavior of that character.
 	
 Respondents read a vignette about a generic character, who performs the action of baking a cake while being described as a certain age and exhibiting either good or bad behavior. Two groups read vignettes where the character is stated to be a child, while two read vignettes where the character is an adult. Additionally, two groups read vignettes where the character exhibits bad behavior while two read vignettes where the character exhibits good behavior. A total of four respondent groups will read vignettes that contain one combination of age and behavior. All four combinations of age and behavior will be represented in the survey and are randomly assigned to respondents.
 
@@ -45,7 +49,7 @@ Respondents read a vignette about a generic character, who performs the action o
 
 # Methodology
 
-We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 58 complete, consenting responses. The two treatment factors, age and behavior, were randomized by a series of vignettes. Each factor has a similar number of resondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The dependent variable is the opinion of the character, Sam,  in the vignette, ascertained via a five-point likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement. 
+We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 58 complete, consenting responses. The two treatment factors, age and behavior, were randomized by a series of vignettes. Each factor has a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The dependent variable is the opinion of the character, Sam,  in the vignette, ascertained via a five-point likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement. 
 
 Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette, and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. Four vignettes capture the total number of combinations of the two variables.
 
@@ -134,7 +138,7 @@ summary(liking_aov_inter)
 ```
 
 
-In both the additive and interactive models, we see that the mean opinions of the vignette character are different across the levels of the behavior variable (Good/Bad). The F-value is large and the p-value is smaller than 0.05, which provides sufficient evidence to reject the null hypothesis. From this, we can conclude, that the behavior described in the vignette influences the opinion of the vignette character of Smith College students. We do not have sufficient evidence to conclude that the described age of the vignette character has any affect on Smithie's mean opinion of Sam. There is also not sufficent evidence that the vignette character age variable interacts with the behavior variable.
+In both the additive and interactive models, we see that the mean opinions of the vignette character are different across the levels of the behavior variable (Good/Bad). The F-value is large and the p-value is smaller than 0.05, which provides sufficient evidence to reject the null hypothesis. From this, we can conclude, that the behavior described in the vignette influences the opinion of the vignette character of Smith College students. We do not have sufficient evidence to conclude that the described age of the vignette character has any affect on Smithie's mean opinion of Sam. There is also not sufficient evidence that the vignette character age variable interacts with the behavior variable.
 
 ### Kruskal Wallis Test
 
@@ -145,20 +149,20 @@ kruskal.test(opinion~behavior, data = df)
 kruskal.test(opinion~v_age, data = df)
 ```
 
-We see that the behavior variable once again is signficant while the vignette age variable is not. Our results from the ANOVA are confirmed using non-parametric methods. 
+We see that the behavior variable once again is significant while the vignette age variable is not. Our results from the ANOVA are confirmed using non-parametric methods. 
 
 ### Pairwise Comparisons
 
-To test our pairwise comparisons, we will use both a TukeyHSD test and a Bonferonni Adjustment. The Tukey test will condict pairwise comparisons for both of our explanatory variables, while the Bonferroni test will conduct pairwiase comparisons for each of the four groups using the condition variable, which indicates which combination of age and behavior was described in the vignette for each respondent. 
+To test our pairwise comparisons, we will use both a TukeyHSD test and a Bonferonni Adjustment. The Tukey test will conduct pairwise comparisons for both of our explanatory variables, while the Bonferroni test will conduct pairwise comparisons for each of the four groups using the condition variable, which indicates which combination of age and behavior was described in the vignette for each respondent. 
 
 ```{r, warning = F, message = F, echo = F}
 TukeyHSD(liking_aov_add)
 bonfCI(df$opinion, df$condition, conf.level = 0.95)
 ```
 
-The Tukey HSD test shows that the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a signficiant predictor of mean opinion of the vignette character, but not stated character age. 
+The Tukey HSD test shows that the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a significant predictor of mean opinion of the vignette character, but not stated character age. 
 
-The Bonferroni Adjustment also supports this conclusion. We see that for each of teh four significant pairwise comparisons, the behavior is different (i.e. Good vs. Bad comparison). For two of the signficant pairwise comparisons, the age of the character varies, but does not for the other two. This also supports the conclusion that the described type of behavior in the vignette influences the mean opinion of Sam. 
+The Bonferroni Adjustment also supports this conclusion. We see that for each of the four significant pairwise comparisons, the behavior is different (i.e. Good vs. Bad comparison). For two of the significant pairwise comparisons, the age of the character varies, but does not for the other two. This also supports the conclusion that the described type of behavior in the vignette influences the mean opinion of Sam. 
 
 
 ## Post-Modeling Condition Checks
