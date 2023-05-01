@@ -24,8 +24,6 @@ df$behavior <- as.factor(df$behavior)
 
 # Introduction
 
-increasing age brings changes in cognition and emotion that have impacts on subjective well-being, social relationships, decision making, and self-control.
-
 It's usually pretty obvious what adults can do that children can't. Adults can drive, pay for what they want, work, drink alcohol, travel on their own, and so on. If a child does these things, then it is either illegal or socially frowned upon. Maybe less commonly discussed are what children can do that adults can't or rather shouldn't. Children can take off their clothes in public, speak at high volumes despite being indoors, pee in the swimming pool, have nap times in school, and many other things that are usually things that, if done by adults, would be inappropriate or seen as odd.
 
 When taking another look at these actions, it's not that adults or children are strictly unable to do all of them (yes, children can drive if there are cars designed that way but we can't say that they can drive *well*), but rather that societal norms and regulations restrict people based on their ages. With increasing age comes better decision making ability and self control [@noauthor_goal_nodate], so it makes sense that it is societally more acceptable for children to act immaturely or inappropriately compared to adults. Even so, just how much of an influence does a person's age and behavior have on others' opinions of that person? This project aims to study this by examining how peoples’ opinion of a character in a vignette changes based on the stated age and the described behavior of that character.
