@@ -1,5 +1,5 @@
 ---
-title: "MP2"
+title: "Mini Project 2"
 author: "Grace Rade, Carol Milton, Nikki Lin"
 date: "2023-04-20"
 output: pdf_document
@@ -50,7 +50,7 @@ Before conducting the analysis, the expectations for the results are below:
 
 # Methodology
 
-We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 58 complete, consenting responses. The two treatment factors, age and behavior, were randomized by a series of vignettes. Each factor has a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The dependent variable is the opinion of the character, Sam,  in the vignette, ascertained via a five-point likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement. 
+We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 56 complete, consenting responses. The two treatment factors, age and behavior, were randomized by a series of vignettes. Each factor has a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The dependent variable is the opinion of the character, Sam, in the vignette, ascertained via a five-point likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement. 
 
 Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette, and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. Four vignettes capture the total number of combinations of the two variables.
 
@@ -193,6 +193,7 @@ The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA mo
 ```{r, echo=F, warning=F, message = F}
 ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
+The density plot shows more evidence of non-normal distribution in the residuals.
 
 ### Effect Sizes
 
