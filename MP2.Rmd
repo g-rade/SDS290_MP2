@@ -64,7 +64,7 @@ We begin with checking the conditions for Anova testing. We know that the respon
 
 ```{r, warning = F, message = F, echo = F}
 qplot(x=condition, y=opinion, data=df, ylab="Level of Liking Sam",
-      xlab='Treatment', geom="boxplot") +
+      xlab='Treatment Group', geom="boxplot") +
   theme(axis.title = element_text(size = 15))
 ```
 
