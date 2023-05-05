@@ -34,23 +34,20 @@ When taking another look at these actions, it's not that adults or children are 
 Before conducting the analysis, the expectations for the results are below:
 
 1. Respondents will exhibit more positive attitudes towards the vignette character of younger age. 
-
-  a. Respondents who have viewed the vignettes featuring Sam as a 10 year old child will give higher levels of agreement to the statement “I like Sam”, regardless of the Sam's described behavior. 
+  a. Respondents who have viewed the vignettes featuring Sam as a 10 year old child will give higher levels of agreement to the statement “I like Sam”, regardless of Sam's described behavior. 
 
 2. Respondents will exhibit less positive attitudes towards the vignette character who displays negative behavior. 
-
   a. Respondents who have viewed the vignette featuring Sam exhibiting bad behavior will give lower levels of agreement to the statement “I like Sam”, regardless of Sam's age.
 
 3. Age will have a moderating effect on the attitudes of respondents based on behavior type. 
-
   a. Respondents will exhibit the most positive attitude towards the vignette character of younger age and positive behavior.
 
 
 # Methodology
 
-We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 56 complete, consenting responses. Our participants consisted primarily of white, CIS females between the ages 18-24. The first treatment factor, age, is a factor variable with two levels (10 as a representative age for children, and 45 as a representative for adults). The second treatment variable, is a categorical behavior with two levels (good and bad). The blocking variable, participant perception of the vignette's behavior as good or bad, is a continuous numeric variable measured on a five-point Likert scale regarding "Sam's behavior is good". A score of 1 represents strong disagreement with the statement, and a score of 5 represents strong agreement with the statement. The dependent variable, participant opinion of the vignette, is a continuous numeric variable ascertained via a five-point Likert scale agreement to the statement, “Sam seems likable”. Likewise, a score of 1 represents strong disagreement with the statement, and a score of 5 represents Strong Agreement with the statement.  
+We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 56 complete, consenting responses. Our participants consisted primarily of white, CIS females between the ages 18-24. The first treatment factor, age, is a categorical variable with two levels (10 as a representative age for children, and 45 as a representative for adults). The second treatment variable, is a categorical behavior with two levels (relatively "good" and "bad"). The character of the vignette is given a gender neutral name, "Sam", and is not addressed by any pronouns in order to avoid gender bias. The dependent variable, participant's opinion of the vignette character, is a continuous numeric variable ascertained via a five-point Likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents strong agreement with the statement. We also measure another variable, participant's perception of the vignette's behavior as good or bad, which is a continuous numeric variable measured on a five-point Likert scale regarding "Sam's behavior is good". Likewse, a score of 1 represents strong disagreement with the statement, and a score of 5 represents strong agreement with the statement.
 
-The survey procedure is as follows. Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. The four resulting combination of vignettes is therefore: Sam is 10 years old and exhibits good behavior (10 Good); Sam is 45 years old and exhibits bad behavior (45 Bad); Sam is 10 years old and exhibits bad behavior (10 Bad); and Sam is 45 years old and exhibits good behavior (45 Good). Each combination received a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The four vignettes capture the total number of combinations of the two variables. To test our hypotheses, we conducted both an additive and interactive Anova model as well as a Kruskal-Wallis Test. 
+The survey procedure is as follows. Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. The four resulting combination of vignettes is therefore: Sam is 10 years old and exhibits good behavior (10 Good); Sam is 45 years old and exhibits bad behavior (45 Bad); Sam is 10 years old and exhibits bad behavior (10 Bad); and Sam is 45 years old and exhibits good behavior (45 Good). Each combination received a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The four vignettes capture the total number of combinations of the two variables. To test our hypotheses, we conducted both additive and interactive Anova models as well as a Kruskal-Wallis Test. 
 
 # Results
 
@@ -80,7 +77,7 @@ df |>
   summarise(Group_mean=mean(opinion), Sample_size=n(), Standard_dev=sd(opinion))
 ```
 
-The box plot and the table with the standard deviations show that there is a slight violation of the constant variance assumption, especially for the category in which Sam is 10 years old and does good behavior. However, the Levene's Test indicates that the variance across groups is not statistically different, so we will proceed. 
+The box plot and the descriptive statistics table showing the standard deviations reveal a slight violation of the constant variance assumption, especially for the category in which Sam is 10 years old and does good behavior. However, the Levene's Test indicates that the variance across groups is not statistically different, so we will proceed. 
 
 ### Normality
 ```{r, warning = F, message = F, echo = F}
@@ -90,7 +87,7 @@ There are clear violations of normality for all combinations of factors (age and
 
 ### Transformation
 
-We now check to see if a transformation of the responses that can help satisfy the condition of normality. First, we plot the mean and standard deviations for the response variable, liking of Sam, across the treatment groups.
+We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the mean and standard deviations for the response variable, likability of Sam, across the treatment groups.
 
 ```{r, warning = F, message = F, echo = F}
 summary_stats <- df |>
@@ -101,7 +98,7 @@ ggplot(summary_stats, aes(x=mean, y=sd), ylab="Log(sd)", xlab="Log(mean)") +
   geom_smooth(method="lm", se=F)
 ```
 
-Using the means and standard deviations, we create a linear model and look at the slope.
+Using the means and standard deviations, we create a linear regression model and look at the slope.
 
 ```{r, warning = F, message = F, echo = F}
 lin <- lm(sd~mean, data=summary_stats)
@@ -152,7 +149,7 @@ liking_aov_inter <- aov(opinion~v_age*behavior, data = df)
 summary(liking_aov_inter)
 ```
 
-In both the additive and interactive models, we see that the mean opinions of the vignette character are different across the levels of the behavior variable (Good/Bad). The F-value is large and the p-value is smaller than 0.05, which provides sufficient evidence to reject the null hypothesis. From this, we can conclude that the behavior described in the vignette influences Smith College students' opinions of the vignette character. We do not have sufficient evidence to conclude that the described age of the vignette character has any affect on Smith students' mean opinion of Sam. There is also not sufficient evidence that the vignette character age variable interacts with the behavior variable on participant opinions.
+In both the additive and interactive models, we see that the mean opinions of the vignette character are different across the levels of the behavior variable (Good/Bad). The F-value is large and the p-value is smaller than 0.05, which provides sufficient evidence to reject the null hypothesis. From this, we can conclude that the behavior described in the vignette influences the respondents' mean opinion of the vignette character. We do not have sufficient evidence to conclude that the described age of the vignette character has any affect on the respondents' mean opinion of Sam. There is also not sufficient evidence that the age factor of the vignette character interacts with the behavior factor on participant opinions.
 
 ### Kruskal Wallis Test
 
@@ -225,15 +222,11 @@ list("R squared" = r_sq)
 The groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
 
 # Conclusion 
-  This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that participants' opinion of the vignette differed depending on the vignette's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there significant differences in participants' opinion depending on the type of behavior the vignette displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
+  This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
   
-  There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types. Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results. Additionally, a greater sample size can possibly serve as a solution to our normality violation.
+  There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types. Additionally, a greater sample size can possibly serve as a solution to our normality violation. Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results.
   
-  Future research can use other questions to measure participant opinion towards the vignette, using statements such as such as “I am willing to be friends with Sam”. In our study, we chose a gender-neutral name for our vignette. In future studies, researchers can investigate how a vignette's gender may influence participant attitudes towards their behavior, especially when such behavior is related to traditional gender norms, as cooking and cleaning is often considered a female responsibility. Other areas of exploration can include changing the vignette's racial identity. Future researchers can also investigate if age had a moderating effect on respondents attitudes toward varying degrees of negative behavior, especially ones that may put others in danger. For example, we may compare milder scenarios where both younger and older Sam simply made a mess in the kitchen with more extreme scenarios such as both versions of Sam causes an accidental fire. This way, we can investigate how perceptions of responsibility, tolerance, and forgiveness are related to age and degrees of negative behaviors. 
-
-
-
-
+  Future research can use other questions to measure participant opinion towards the vignette character, using statements such as such as “I am willing to be friends with Sam”. In our study, we chose a gender-neutral name for our vignette character. In future studies, researchers can investigate how a vignette character's gender may influence participant attitudes towards their behavior, especially when such behavior is related to traditional gender norms, as cooking and cleaning is often considered a female responsibility. Other areas of exploration can include changing the vignette character's racial identity. Future researchers can also investigate if age had a moderating effect on respondents attitudes toward varying degrees of negative behavior, especially ones that may put others in danger. For example, we may compare milder scenarios where both younger and older Sam simply made a mess in the kitchen with more extreme scenarios such as both versions of Sam causes an accidental fire in the kitchen. This way, we can investigate how perceptions of responsibility, tolerance, and forgiveness are related to age and degrees of negative behaviors. 
 
 
 # References
