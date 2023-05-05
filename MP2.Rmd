@@ -12,6 +12,7 @@ library(asbio)
 library(readr)
 library(Stat2Data)
 library(car)
+library(cowplot)
 ```
 
 ```{r, warning = F, message = F, echo = F}
@@ -57,10 +58,9 @@ We begin with checking the conditions for Anova testing. We know that the respon
 
 ### Constant Variance
 
-```{r, warning = F, message = F, echo = F}
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap="Mean Opinion of Sam by Treatment Group"}
 qplot(x=condition, y=opinion, data=df, ylab="Level of Liking Sam",
-      xlab='Treatment Group', geom="boxplot") +
-  theme(axis.title = element_text(size = 15))
+      xlab='Treatment Group', geom="boxplot") 
 ```
 
 The box plot shows overall similar variability in terms of the length of the 'boxes', however the 'whiskers' are of varying lengths. The distribution for the category in which Sam is 10 years old and conducts good behavior appears to be non-normal since the mean is at the end of the 'box' and there is also an outlier. The condition for constant variance must be further verified.
@@ -80,9 +80,11 @@ df |>
 The box plot and the descriptive statistics table showing the standard deviations reveal a slight violation of the constant variance assumption, especially for the category in which Sam is 10 years old and does good behavior. However, the Levene's Test indicates that the variance across groups is not statistically different, so we will proceed. 
 
 ### Normality
-```{r, warning = F, message = F, echo = F}
-ggplot(df, aes(x=opinion, color=condition))+geom_density()
+
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap="Density Plot of Opinion Variable"}
+ggplot(df, aes(x=opinion, color=condition))+geom_density() + labs(x ="Opinion of Sam", y = "Density", color = "Treatment Group")
 ```
+
 There are clear violations of normality for all combinations of factors (age and behavior).
 
 ### Transformation
@@ -92,39 +94,49 @@ We now check to see if a transformation of the responses can help satisfy the co
 ```{r, warning = F, message = F, echo = F}
 summary_stats <- df |>
   group_by(condition) |>
-  summarise(mean=log(mean(opinion)), sd=log(sd(opinion)))
-ggplot(summary_stats, aes(x=mean, y=sd), ylab="Log(sd)", xlab="Log(mean)") +
+  summarise(mean=log(mean(opinion)), sd=log(sd(opinion))) ## create a summary stat df to do the log(mean) vs. log(sd) plot
+
+lin <- lm(sd~mean, data=summary_stats) ## get the slope of the line of best fit to add to the plot 
+#summary(lin)
+```
+
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Log(mean) vs. Log(sd) Plot to Assess Possible Data Transformations"}
+ggplot(summary_stats, aes(x=mean, y=sd)) +
+  labs(x = "Log(mean)", y = "Log(sd)") +
   geom_point() +
-  geom_smooth(method="lm", se=F)
+  geom_smooth(method="lm", se=F) + 
+  annotate(geom="text", x=1.0, y=-0.55, label="slope = -0.6487",
+              color="black") ## log(mean) vs. log(sd) plot
 ```
 
-Using the means and standard deviations, we create a linear regression model and look at the slope.
-
-```{r, warning = F, message = F, echo = F}
-lin <- lm(sd~mean, data=summary_stats)
-summary(lin)
-```
-
-The slope is about -0.65 and so 1-slope is 1.65, thus, we can try to see if a reciprocals transformation can help.
+Using the means and standard deviations, we create a linear regression model and look at the slope. The slope is about -0.65 and so 1-slope is 1.65, thus, we can try to see if a reciprocals transformation can help.
 
 ```{r, warning = F, message = F, echo = F}
 df <- df |>
   mutate(recip_opinion = 1/opinion)
 ```
 
-```{r,warning = F, message = F, echo = F}
+```{r,warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Density Plot of Transformed DV"}
 ggplot(df, aes(x=recip_opinion, color=condition))+geom_density()
 ```
-The distributions are still not normal so a reciprocals transformation did not help. 
 
-Similarly, we look at the results of the Tukey-nonadditivity plot. 
-```{r}
+
+The distributions are still not normal so a reciprocals transformation did not help. Similarly, we look at the results of the Tukey-nonadditivity plot. 
+
+
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Tukey Non-Addtivity Plot for Opinion by Vignette Age and Behavior"}
+
 TukeyNonaddPlot(opinion~v_age+behavior, data=df)
 ```
-Again, the Tukey non-additivity plot shows that the slope exceeds zero. 
-```{r}
+
+
+Again, the Tukey non-additivity plot shows that the slope exceeds zero.
+
+
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Tukey Non-Addtivity Plot for Reciprical Opinion by Vignette Age and Behavior"}
 TukeyNonaddPlot(recip_opinion~v_age+behavior, data=df)
 ```
+
 
 The distributions are still not normal so a reciprocals transformation did not help. Therefore, the condition for normality is violated. However, we will continue with Anova testing, despite the condition for normality being violated, and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
 
@@ -132,12 +144,11 @@ The distributions are still not normal so a reciprocals transformation did not h
 
 First, we will assess the data for the appearance of interaction between our dependent variables. 
 
-```{r, warning = F, message = F, echo = F}
-TukeyNonaddPlot(opinion~as.factor(v_age)+behavior, data = df)
+```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Mean Opinion od Sam by Vignette Age and Behavior"}
 interaction.plot(df$v_age, df$behavior, df$opinion, xlab = "Vignette Age", ylab = "Mean Opinion of Sam", trace.label = "Vignette Behavior")
 ```
 
-The Tukey plot has a nonzero slope, which indicates that there is evidence of non-additivity. However, the interaction plot shows that the lines for Good and Bad behavior do not intersect but have slopes of opposite signs. 
+The above Tukey plot has a nonzero slope, which indicates that there is evidence of non-additivity. However, the interaction plot shows that the lines for Good and Bad behavior do not intersect but have slopes of opposite signs. 
 
 We will fit both an additive and interaction model.
 
@@ -177,7 +188,7 @@ The Tukey HSD test shows that opinons of the behavior groups are different from 
 
 We want to check the residuals to further evaluate our model.
 
-```{r, echo=F, warning=F, messafe = F}
+```{r, echo=F, warning=F, message = F}
 resid <-  resid(liking_aov_add)
 
 Model <- data.frame(Fitted = fitted(liking_aov_add), 
@@ -187,13 +198,14 @@ Model <- data.frame(Fitted = fitted(liking_aov_add),
 ```
 
 ```{r, echo=F, warning=F, message = F}
+par(mfrow=c(1,2))
 plot(liking_aov_add, which = 1)
 plot(liking_aov_add, which = 2)
 ```
 
 The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. We also see that the residuals are not symmetrical from the density plot. 
 
-```{r, echo=F, warning=F, message = F}
+```{r, echo=F, warning=F, message = F, fig.width=4,fig.height=3}
 ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
 The density plot shows more evidence of non-normal distribution in the residuals.
@@ -206,25 +218,27 @@ mse <- 0.91
 tengb <- 1.72527/0.91
 tenbffb <- -0.1619/0.91
 tengffb <- 1.88718/0.91
-tenbffg <- -2.07143/0.91
+tenbffg <- 2.07143/0.91
 tengffg <- -0.34615/0.91
 ffbffg <- 2.23333/0.91
 
 good_bad <- 1.988396/0.91
 ten_ffive <- 0.085568833/0.91
 
-list("10 Bad vs. 10 Good" = tengb, "45 Bad vs. 10 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "10 Bad vs. 45 Good" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Good vs. 45 Bad" = ffbffg, "Good vs. Bad" = good_bad, "10 vs. 45" = ten_ffive) 
+list("Good vs. Bad" = good_bad, "10 vs. 45" = ten_ffive, "10 Good vs. 10 Bad" = tengb, "45 Bad vs. 10 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "45 Good vs. 10 Bad" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Good vs. 45 Bad" = ffbffg) 
 
 r_sq <- (0.1 + 55.28)/(0.1+55.28+48.47)
 r_sq2 <- (0.1 + 55.28 + 0.9)/(0.1 + 55.28 + 0.9 + 47.55)
+```
+
+Effect sizes show that changing the type of behavior in the vignette has a large effect on the mean opinion of Sam, where the vignette age only has a trivbial effect. Pairwise effect size analysis shows that the groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
+
+```{r,  warning = F, message = F, echo = F}
 list("R squared: Additive" = r_sq, "R squared: Interaction" = r_sq2)
 ```
 
-The groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
 
-Comparing the differences within the 
-
-The R squared values show that the additive  model explains about 53% of the variation in our data, while the interactive model explains about 54% of the vairation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam. 
+The R squared values show that the additive model explains about 53% of the variation in our data, while the interactive model explains about 54% of the vairation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam. 
 
 # Conclusion 
   This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
