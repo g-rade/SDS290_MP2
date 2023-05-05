@@ -167,13 +167,10 @@ We see that the behavior variable once again is significant while the vignette a
 To test our pairwise comparisons, we will use both a TukeyHSD test and a Bonferonni Adjustment. The Tukey test will conduct pairwise comparisons for both of our explanatory variables, while the Bonferroni test will conduct pairwise comparisons for each of the four groups using the condition variable, which indicates which combination of age and behavior was described in the vignette for each respondent. 
 
 ```{r, warning = F, message = F, echo = F}
-TukeyHSD(liking_aov_add)
-bonfCI(df$opinion, df$condition, conf.level = 0.95)
+TukeyHSD(liking_aov_inter)
 ```
 
-The Tukey HSD test shows that opinons of the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a significant predictor of mean opinion of the vignette character, but not stated character age. 
-
-The Bonferroni Adjustment also supports this conclusion. We see that for each of the four significant pairwise comparisons, the behavior is different (i.e. Good vs. Bad comparison). Keeping behavior type constant (both good or both bad), and changing the age of the vignette did not yield significant results, so a main effect of age is not verified. For two of the significant pairwise comparisons, the age of the character varies, but does not for the other two, so a main effect of age is not found. This also supports the conclusion that the vignette's type of behavior, but not the vignette's age, influences the mean opinion of Sam. 
+The Tukey HSD test shows that opinons of the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a significant predictor of mean opinion of the vignette character, but not stated character age. Pairwise comparisonf from the Tukey test also show that the comparisons wher behavior differs (Good vs. Bad) have a meaningful difference in means, regardless of whether or not age differs as well. 
 
 
 ## Post-Modeling Condition Checks
@@ -201,25 +198,33 @@ ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
 The density plot shows more evidence of non-normal distribution in the residuals.
 
-### Effect Sizes
+### Effect Sizes and R Squared
 
 ```{r, warning = F, message = F, echo = F}
 mse <- 0.91
 
-tengb <- -1.72527/0.91
-tenbffb <- 0.1619/0.91
+tengb <- 1.72527/0.91
+tenbffb <- -0.1619/0.91
 tengffb <- 1.88718/0.91
 tenbffg <- -2.07143/0.91
 tengffg <- -0.34615/0.91
-ffbffg <- -2.23333/0.91
+ffbffg <- 2.23333/0.91
 
-list("10 Bad vs. 10 Good" = tengb, "10 Bad vs. 45 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "10 Bad vs. 45 Good" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Bad vs. 45 Good" = ffbffg) 
+good_bad <- 1.988396/0.91
+ten_ffive <- 0.085568833/0.91
+
+list("10 Bad vs. 10 Good" = tengb, "45 Bad vs. 10 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "10 Bad vs. 45 Good" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Good vs. 45 Bad" = ffbffg, "Good vs. Bad" = good_bad, "10 vs. 45" = ten_ffive) 
 
 r_sq <- (0.1 + 55.28)/(0.1+55.28+48.47)
-list("R squared" = r_sq)
+r_sq2 <- (0.1 + 55.28 + 0.9)/(0.1 + 55.28 + 0.9 + 47.55)
+list("R squared: Additive" = r_sq, "R squared: Interaction" = r_sq2)
 ```
 
 The groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
+
+Comparing the differences within the 
+
+The R squared values show that the additive  model explains about 53% of the variation in our data, while the interactive model explains about 54% of the vairation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam. 
 
 # Conclusion 
   This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
