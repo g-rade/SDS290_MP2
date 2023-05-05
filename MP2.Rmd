@@ -217,6 +217,9 @@ tengffg <- -0.34615/0.91
 ffbffg <- -2.23333/0.91
 
 list("10 Bad vs. 10 Good" = tengb, "10 Bad vs. 45 Bad" = tenbffb, "10 Good vs. 45 Bad "= tengffb, "10 Bad vs. 45 Good" = tenbffg, "10 Good vs. 45 Good" = tengffg, "45 Bad vs. 45 Good" = ffbffg) 
+
+r_sq <- (0.1 + 55.28)/(0.1+55.28+48.47)
+list("R squared" = r_sq)
 ```
 
 The groups that have large effects are the groups that vary by behavior type. Additionally, some groups with large effects also vary by age, but not all. The groups that do not vary by behavior type do not have large effects. 10 Bad vs. 45 Bad has a trivial effect and 10 Good vs. 45 Good has a small effect. 
