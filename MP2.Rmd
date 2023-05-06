@@ -54,11 +54,11 @@ The survey procedure is as follows. Each respondent was shown one of four vignet
 
 ## Checking Anova Conditions
 
-We begin with checking the conditions for Anova testing. We know that the response variable, how the much the participant likes Sam, is continuous while the factors, Sam's 'good' or 'bad' actions and Sam's age, are categorical, which satisfies the condition about the types of variables. We then check for constant variance.
+We begin with checking the conditions for Anova testing. We know that the response variable, how the much the participant likes Sam, is continuous while the factors, Sam's 'good' or 'bad' actions and Sam's age, are categorical, which satisfies the condition about the types of variables. We then check for constant variance. (Fig. 1)
 
 ### Constant Variance
 
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap="Mean Opinion of Sam by Treatment Group"}
+```{r, warning = F, message = F, echo = F, fig.height = 3, fig.cap="Mean Opinion of Sam by Treatment Group"}
 qplot(x=condition, y=opinion, data=df, ylab="Level of Liking Sam",
       xlab='Treatment Group', geom="boxplot") 
 ```
@@ -81,15 +81,15 @@ The box plot and the descriptive statistics table showing the standard deviation
 
 ### Normality
 
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap="Density Plot of Opinion Variable"}
+```{r, warning = F, message = F, echo = F, fig.height = 3, fig.cap="Density Plot for Opinion of Sam"}
 ggplot(df, aes(x=opinion, color=condition))+geom_density() + labs(x ="Opinion of Sam", y = "Density", color = "Treatment Group")
 ```
 
-There are clear violations of normality for all combinations of factors (age and behavior).
+There are clear violations of normality for all combinations of factors (age and behavior). (Fig. 2)
 
 ### Transformation
 
-We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the mean and standard deviations for the response variable, likability of Sam, across the treatment groups.
+We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the logs of the mean and standard deviations for the response variable, likability of Sam, across the treatment groups (Fig. 3).
 
 ```{r, warning = F, message = F, echo = F}
 summary_stats <- df |>
@@ -100,7 +100,7 @@ lin <- lm(sd~mean, data=summary_stats) ## get the slope of the line of best fit 
 #summary(lin)
 ```
 
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Log(mean) vs. Log(sd) Plot to Assess Possible Data Transformations"}
+```{r, warning = F, message = F, echo = F, fig.height = 3, fig.cap = "Log(mean) vs. Log(sd) Plot to Assess Possible Data Transformations"}
 ggplot(summary_stats, aes(x=mean, y=sd)) +
   labs(x = "Log(mean)", y = "Log(sd)") +
   geom_point() +
@@ -116,35 +116,31 @@ df <- df |>
   mutate(recip_opinion = 1/opinion)
 ```
 
-```{r,warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Density Plot of Transformed DV"}
+```{r,warning = F, message = F, echo = F, fig.height = 4, fig.cap = "Density Plot of Transformed DV"}
 ggplot(df, aes(x=recip_opinion, color=condition))+geom_density()
 ```
 
+The distributions are still not normal so a reciprocals transformation did not help (Fig.4). Similarly, we look at the results of the Tukey-nonadditivity plot for the non-transformed data. 
 
-The distributions are still not normal so a reciprocals transformation did not help. Similarly, we look at the results of the Tukey-nonadditivity plot. 
-
-
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Tukey Non-Addtivity Plot for Opinion by Vignette Age and Behavior"}
+```{r, warning = F, message = F, echo = F, fig.width = 5, fig.cap = "Tukey Non-Addtivity Plot for Opinion by Vignette Age and Behavior"}
 
 TukeyNonaddPlot(opinion~v_age+behavior, data=df)
 ```
 
+Again, the Tukey non-additivity plot for the transformed datashows that the slope exceeds zero. (Fig. 5)
 
-Again, the Tukey non-additivity plot shows that the slope exceeds zero.
-
-
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Tukey Non-Addtivity Plot for Reciprical Opinion by Vignette Age and Behavior"}
+```{r, warning = F, message = F, echo = F, fig.width = 5, fig.cap = "Tukey Non-Addtivity Plot for Reciprical Opinion by Vignette Age and Behavior"}
 TukeyNonaddPlot(recip_opinion~v_age+behavior, data=df)
 ```
 
 
-The distributions are still not normal so a reciprocals transformation did not help. Therefore, the condition for normality is violated. However, we will continue with Anova testing, despite the condition for normality being violated, and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
+The distributions are still not normal so a reciprocals transformation did not help (Fig. 6). Therefore, the condition for normality is violated. However, we will continue with Anova testing, despite the condition for normality being violated, and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
 
 ## Anova Testing
 
-First, we will assess the data for the appearance of interaction between our dependent variables. 
+First, we will assess the data for the appearance of interaction between our dependent variables using an interaction plot (Fig. 7). 
 
-```{r, warning = F, message = F, echo = F, fig.width = 4, fig.height = 3, fig.cap = "Mean Opinion od Sam by Vignette Age and Behavior"}
+```{r, warning = F, message = F, echo = F, fig.cap = "Interaction Plot for Mean Opinion of Sam by Vignette Age and Behavior"}
 interaction.plot(df$v_age, df$behavior, df$opinion, xlab = "Vignette Age", ylab = "Mean Opinion of Sam", trace.label = "Vignette Behavior")
 ```
 
@@ -197,17 +193,18 @@ Model <- data.frame(Fitted = fitted(liking_aov_add),
                      Observed=df$opinion)
 ```
 
-```{r, echo=F, warning=F, message = F}
+```{r, echo=F, warning=F, message = F, fig.cap = "Fitted vs. Residuals Plot and QQ Plot for the Addtive ANOVA Model"}
 par(mfrow=c(1,2))
 plot(liking_aov_add, which = 1)
 plot(liking_aov_add, which = 2)
 ```
 
-The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. We also see that the residuals are not symmetrical from the density plot. 
+The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. We also see that the residuals are not symmetrical from the density plot (Fig. 8).
 
-```{r, echo=F, warning=F, message = F, fig.width=4,fig.height=3}
+```{r, echo=F, warning=F, message = F, fig.height = 4}
 ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
+
 The density plot shows more evidence of non-normal distribution in the residuals.
 
 ### Effect Sizes and R Squared
@@ -241,11 +238,11 @@ list("R squared: Additive" = r_sq, "R squared: Interaction" = r_sq2)
 The R squared values show that the additive model explains about 53% of the variation in our data, while the interactive model explains about 54% of the vairation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam. 
 
 # Conclusion 
-  This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
+This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
   
-  There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types. Additionally, a greater sample size can possibly serve as a solution to our normality violation. Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results.
+There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types. Additionally, a greater sample size can possibly serve as a solution to our normality violation. Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results.
   
-  Future research can use other questions to measure participant opinion towards the vignette character, using statements such as such as “I am willing to be friends with Sam”. In our study, we chose a gender-neutral name for our vignette character. In future studies, researchers can investigate how a vignette character's gender may influence participant attitudes towards their behavior, especially when such behavior is related to traditional gender norms, as cooking and cleaning is often considered a female responsibility. Other areas of exploration can include changing the vignette character's racial identity. Future researchers can also investigate if age had a moderating effect on respondents attitudes toward varying degrees of negative behavior, especially ones that may put others in danger. For example, we may compare milder scenarios where both younger and older Sam simply made a mess in the kitchen with more extreme scenarios such as both versions of Sam causes an accidental fire in the kitchen. This way, we can investigate how perceptions of responsibility, tolerance, and forgiveness are related to age and degrees of negative behaviors. 
+Future research can use other questions to measure participant opinion towards the vignette character, using statements such as such as “I am willing to be friends with Sam”. In our study, we chose a gender-neutral name for our vignette character. In future studies, researchers can investigate how a vignette character's gender may influence participant attitudes towards their behavior, especially when such behavior is related to traditional gender norms, as cooking and cleaning is often considered a female responsibility. Other areas of exploration can include changing the vignette character's racial identity. Future researchers can also investigate if age had a moderating effect on respondents attitudes toward varying degrees of negative behavior, especially ones that may put others in danger. For example, we may compare milder scenarios where both younger and older Sam simply made a mess in the kitchen with more extreme scenarios such as both versions of Sam causes an accidental fire in the kitchen. This way, we can investigate how perceptions of responsibility, tolerance, and forgiveness are related to age and degrees of negative behaviors. 
 
 
 # References
