@@ -48,13 +48,13 @@ Before conducting the analysis, the expectations for the results are below:
 
 We conducted a two-way randomized survey experiment to investigate our hypotheses. The survey was distributed to Smith College students, and we received a total of 56 complete, consenting responses. Our participants consisted primarily of white, CIS females between the ages 18-24. The first treatment factor, age, is a categorical variable with two levels (10 as a representative age for children, and 45 as a representative for adults). The second treatment variable, is a categorical behavior with two levels (relatively "good" and "bad"). The character of the vignette is given a gender neutral name, "Sam", and is not addressed by any pronouns in order to avoid gender bias. The dependent variable, participant's opinion of the vignette character, is a continuous numeric variable ascertained via a five-point Likert scale agreement to the statement, “Sam seems likable”. A score of 1 represents strong disagreement with the statement, and a score of 5 represents strong agreement with the statement. We also measure another variable, participant's perception of the vignette's behavior as good or bad, which is a continuous numeric variable measured on a five-point Likert scale regarding "Sam's behavior is good". Likewse, a score of 1 represents strong disagreement with the statement, and a score of 5 represents strong agreement with the statement.
 
-The survey procedure is as follows. Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam is stated to either be ten years old or forty-five years old. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. The four resulting combination of vignettes is therefore: Sam is 10 years old and exhibits good behavior (10 Good); Sam is 45 years old and exhibits bad behavior (45 Bad); Sam is 10 years old and exhibits bad behavior (10 Bad); and Sam is 45 years old and exhibits good behavior (45 Good). Each combination received a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The four vignettes capture the total number of combinations of the two variables. To test our hypotheses, we conducted both additive and interactive Anova models as well as a Kruskal-Wallis Test. 
+Each respondent was shown one of four vignettes, which varied on two aspects: the age of the character in the vignette and the type of behavior they displayed. All four vignettes featured the character Sam performing the action of baking a cake. Sam age (either 10 or 45 years old) is stated in the vignette and their behavior is described. Good behavior is cleaning up the kitchen after baking and sharing the cake with friends. Bad behavior is leaving a mess in the kitchen and eating the cake alone. The four resulting combination of vignettes is therefore: Sam is 10 years old and exhibits good behavior (10 Good); Sam is 45 years old and exhibits bad behavior (45 Bad); Sam is 10 years old and exhibits bad behavior (10 Bad); and Sam is 45 years old and exhibits good behavior (45 Good). Each combination received a similar number of respondents. 10 Good has 13 responses, 45 Bad has 15 responses, and 10 Bad and 45 Good each have 14 responses. The four vignettes capture the total number of combinations of the two variables. To test our hypotheses, we conducted both additive and interactive Anova models as well as a Kruskal-Wallis Test. 
 
 # Results
 
 ## Checking Anova Conditions
 
-We begin with checking the conditions for Anova testing. We know that the response variable, how the much the participant likes Sam, is continuous while the factors, Sam's 'good' or 'bad' actions and Sam's age, are categorical, which satisfies the condition about the types of variables. We then check for constant variance. (Fig. 1)
+We begin with checking the conditions for Anova testing. We know that the response variable, how the much the participant likes Sam, is continuous while the factors, Sam's 'good' or 'bad' actions and Sam's age, are categorical, which satisfies the condition about the types of variables. We then check for constant variance.
 
 ### Constant Variance
 
@@ -63,13 +63,13 @@ qplot(x=condition, y=opinion, data=df, ylab="Level of Liking Sam",
       xlab='Treatment Group', geom="boxplot") 
 ```
 
-The box plot shows overall similar variability in terms of the length of the 'boxes', however the 'whiskers' are of varying lengths. The distribution for the category in which Sam is 10 years old and conducts good behavior appears to be non-normal since the mean is at the end of the 'box' and there is also an outlier. The condition for constant variance must be further verified.
+The box plot (Fig. 1) shows overall similar variability in terms of the length of the 'boxes', however the 'whiskers' are of varying lengths. The distribution for the category in which Sam is 10 years old and conducts good behavior appears to be non-normal since the median is the lower boundary of the 'box' and there is also an outlier. The condition for constant variance must be further verified.
 
 ```{r, warning = F, message = F, echo = F}
 leveneTest(opinion~condition, data=df)
 ```
 
-The Levene's Test for Homogeneity shows that the p-value is greater than alpha (0.05), so we fail to reject the null hypothesis that there is no constant variance.
+The Levene's Test for Homogeneity shows that the p-value is greater than alpha (0.05), so we fail to reject the null hypothesis that there is no constant variance. We will also check the standard deviations and means for each treatment group.  
 
 ```{r, warning = F, message = F, echo = F}
 df |>
@@ -85,9 +85,9 @@ The box plot and the descriptive statistics table showing the standard deviation
 ggplot(df, aes(x=opinion, color=condition))+geom_density() + labs(x ="Opinion of Sam", y = "Density", color = "Treatment Group")
 ```
 
-There are clear violations of normality for all combinations of factors (age and behavior). (Fig. 2)
+There are clear violations of normality for all treatment groups (Fig. 2). The "Good" treatment groups (10 Good and 45 Good), both have long left tails and appear display bimodal distributions. The "Bad" treatment groups (10 Bad and 45 Bad) have asymmetrical distributions, and the 10 Bad group is multimodal. 
 
-### Transformation
+#### Transformation
 
 We now check to see if a transformation of the responses can help satisfy the condition of normality. First, we plot the logs of the mean and standard deviations for the response variable, likability of Sam, across the treatment groups (Fig. 3).
 
@@ -109,32 +109,31 @@ ggplot(summary_stats, aes(x=mean, y=sd)) +
               color="black") ## log(mean) vs. log(sd) plot
 ```
 
-Using the means and standard deviations, we create a linear regression model and look at the slope. The slope is about -0.65 and so 1-slope is 1.65, thus, we can try to see if a reciprocals transformation can help.
+Using the means and standard deviations, we create a linear regression model and look at the slope. The slope is about -0.65 and so 1-slope is 1.65, thus, we can try to see if a reciprocals transformation can help normalize the spread of the data.
 
 ```{r, warning = F, message = F, echo = F}
 df <- df |>
   mutate(recip_opinion = 1/opinion)
 ```
 
-```{r,warning = F, message = F, echo = F, fig.height = 4, fig.cap = "Density Plot of Transformed DV"}
+```{r,warning = F, message = F, echo = F, fig.cap = "Density Plot of Transformed DV"}
 ggplot(df, aes(x=recip_opinion, color=condition))+geom_density()
 ```
 
-The distributions are still not normal so a reciprocals transformation did not help (Fig.4). Similarly, we look at the results of the Tukey-nonadditivity plot for the non-transformed data. 
+The distributions are still not normal so a reciprocals transformation did not ressolve the normality issues with our data according to the density plot (Fig.4). Given that the continued issue of normality in the data, we can use a Tukey Non-additivity plot to assess the need for interaction in our model. (Fig. 5)
 
-```{r, warning = F, message = F, echo = F, fig.width = 5, fig.cap = "Tukey Non-Addtivity Plot for Opinion by Vignette Age and Behavior"}
+```{r, warning = F, message = F, echo = F, fig.cap = "Tukey Non-Addtivity Plot for Opinion by Vignette Age and Behavior"}
 
 TukeyNonaddPlot(opinion~v_age+behavior, data=df)
 ```
 
-Again, the Tukey non-additivity plot for the transformed datashows that the slope exceeds zero. (Fig. 5)
+The Tukey Non-additivity plot for our un-transformed dependent variable shows a non-zero slope, which indicates either a transformation of the data or interaction. The Tukey non-additivity plot for the transformed data also has a non-zero slope that indicates the need for interaction in the model. (Fig. 6)
 
 ```{r, warning = F, message = F, echo = F, fig.width = 5, fig.cap = "Tukey Non-Addtivity Plot for Reciprical Opinion by Vignette Age and Behavior"}
 TukeyNonaddPlot(recip_opinion~v_age+behavior, data=df)
 ```
 
-
-The distributions are still not normal so a reciprocals transformation did not help (Fig. 6). Therefore, the condition for normality is violated. However, we will continue with Anova testing, despite the condition for normality being violated, and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
+The condition for normality is clearly violated for both the transformed and un=transformed data. However, we will continue with Anova testing, despite the condition for normality being violated, and then check the robustness of the model with the non-parametric test, the Kruskal Wallis test.
 
 ## Anova Testing
 
@@ -144,9 +143,9 @@ First, we will assess the data for the appearance of interaction between our dep
 interaction.plot(df$v_age, df$behavior, df$opinion, xlab = "Vignette Age", ylab = "Mean Opinion of Sam", trace.label = "Vignette Behavior")
 ```
 
-The above Tukey plot has a nonzero slope, which indicates that there is evidence of non-additivity. However, the interaction plot shows that the lines for Good and Bad behavior do not intersect but have slopes of opposite signs. 
+The above Tukey plot has a nonzero slope (Fig. 5), which indicates that there is evidence of non-additivity. However, the interaction plot shows that the lines for Good and Bad behavior are reasonably parallel, but do have slopes of opposite signs. This is mixed evidence for the presence of interaction in our data. 
 
-We will fit both an additive and interaction model.
+We will fit both an additive and interaction model to accommodate this uncertainty and allow us to test our third hypotheses.
 
 ```{r, warning = F, message = F, echo = F}
 liking_aov_add <- aov(opinion~v_age+behavior, data = df)
@@ -160,32 +159,34 @@ In both the additive and interactive models, we see that the mean opinions of th
 
 ### Kruskal Wallis Test
 
-Given the violation of the normality assumption, we will verify our results with a non-parametric test. Since we have more than two groups in our analysis, we will use a Kruskal-Wallis test. To do so, we will conduct separate tests for each of our explanatory variables.
+Given the violation of the normality assumption, we will verify our results with a non-parametric test. Since we have more than two groups in our analysis, we will use a Kruskal-Wallis test. To do so, we will conduct separate tests for each of our explanatory variables, as well as a third test for the interaction between the two variables.
 
 ```{r, warning = F, message = F, echo = F}
 kruskal.test(opinion~behavior, data = df)
 kruskal.test(opinion~v_age, data = df)
+kruskal.test(opinion~interaction(v_age, behavior), data = df)
 ```
 
-We see that the behavior variable once again is significant while the vignette age variable is not. Our results from the ANOVA are confirmed using non-parametric methods. 
+We see that the behavior variable once again is significant while the vignette age variable is not. Our results from the ANOVA are confirmed using non-parametric methods. However we do find that the interaction between vignette age and behavior is significant according to the Kruskall-Wallis test. From this we conclude that interaction actually *is* present among our variables, as a non-parametric test is more appropriate method of analysis for our data given the significant violations of the normality condition for all treatment groups. 
 
 ### Pairwise Comparisons
 
-To test our pairwise comparisons, we will use both a TukeyHSD test and a Bonferonni Adjustment. The Tukey test will conduct pairwise comparisons for both of our explanatory variables, while the Bonferroni test will conduct pairwise comparisons for each of the four groups using the condition variable, which indicates which combination of age and behavior was described in the vignette for each respondent. 
+To test our pairwise comparisons, we will use both a TukeyHSD test to compare both the levels of the explanatory vairables in isolation and all of the treatment group pairs. 
 
 ```{r, warning = F, message = F, echo = F}
 TukeyHSD(liking_aov_inter)
 ```
 
-The Tukey HSD test shows that opinons of the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a significant predictor of mean opinion of the vignette character, but not stated character age. Pairwise comparisonf from the Tukey test also show that the comparisons wher behavior differs (Good vs. Bad) have a meaningful difference in means, regardless of whether or not age differs as well. 
+The Tukey HSD test shows that opinions of the behavior groups are different from one another, while the age groups are not. This supports our earlier conclusions that behavior is a significant predictor of mean opinion of the vignette character, but not stated character age. Pairwise comparisons of the treatment groups show that the comparisons when behavior differs (Good vs. Bad) have a meaningful difference in means, where those that only vary based on vignette age do not. 
 
+The treatment group pairwise comparison results do not support our conclusion from the Kruskall-Wallis test that there is interaction in the data. However, 
 
 ## Post-Modeling Condition Checks
 
 We want to check the residuals to further evaluate our model.
 
 ```{r, echo=F, warning=F, message = F}
-resid <-  resid(liking_aov_add)
+resid <-  resid(liking_aov_inter)
 
 Model <- data.frame(Fitted = fitted(liking_aov_add), 
                      Residuals = resid(liking_aov_add),
@@ -199,13 +200,13 @@ plot(liking_aov_add, which = 1)
 plot(liking_aov_add, which = 2)
 ```
 
-The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. We also see that the residuals are not symmetrical from the density plot (Fig. 8).
+The Fitted vs. Residuals plot shows that the residuals for the additive ANOVA model are reasonably symmetrically distributed. However, the normality condition is very clearly violated as the residuals do not fall along a line. (Fig. 8) 
 
-```{r, echo=F, warning=F, message = F, fig.height = 4}
+```{r, echo=F, warning=F, message = F, fig.height = 4, fig.cap = "Desnity Plot of Model Residuals"}
 ggplot(Model, aes(x=Residuals, color=Treatment))+geom_density()
 ```
 
-The density plot shows more evidence of non-normal distribution in the residuals.
+The density plot shows more evidence of non-normal distribution in the residuals. (Fig. 9)
 
 ### Effect Sizes and R Squared
 
@@ -235,12 +236,17 @@ list("R squared: Additive" = r_sq, "R squared: Interaction" = r_sq2)
 ```
 
 
-The R squared values show that the additive model explains about 53% of the variation in our data, while the interactive model explains about 54% of the vairation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam. 
+The R squared values show that the additive model explains about 53% of the variation in our data, while the interactive model explains about 54% of the variation in the model. The small difference in the R squared values reinforces the conclusion that the character age and behavior in the vignettes do not interactively influence the opinion of Sam in the parametric model. 
 
 # Conclusion 
-This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. 
+
+This study investigated how individual's opinions toward others differed depending on the other person's age and type of behavior. There is not sufficient evidence to suggest that the participants' opinion of the vignette character differed depending on the vignette character's age, so we failed to prove the first hypothesis suggesting that respondents will exhibit more positive attitudes towards the vignette character of younger age. However, there are significant differences in the participants' opinions depending on the type of behavior the vignette character displayed. In concurrence with our second hypothesis, participants were more likely to exhibit less positive attitudes towards the vignette character who displays negative behavior, and more positive attitudes towards the vignette character with positive behavior. Based on our interactive Anova model, we failed to discover any moderating effect of age on the attitudes of respondents across different behavior types, so there is not sufficient evidence to prove our third hypothesis. However, this conclusion is contradicted by the results of the Kruskall-Wallis test on the interaction between vignette age and behavior. 
   
-There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types. Additionally, a greater sample size can possibly serve as a solution to our normality violation. Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results.
+There were several limitations to this study. First, the normality condition is violated in our Anova models, so the significant results indicating that a person’s opinion of another differed depending on the other person's behavior may not be reliable. However, our Kruskal Wallis Test results later yielded significant results indicating a difference in opinion across varying behavior types and for interaction. Given the significant normality violations, we are believe that the results of the Kruskall-Wallis tests are more accurate to the true nature of the data, as parametric analysis is not appropriate. 
+
+Secondly, our participants were not chosen through random sampling and do not represent the entire Smith student population. Therefore, the results of this study cannot be generalized to the entire Smith student population. Additionally, a greater sample size can possibly serve as a solution to our normality violation. 
+
+Third, most of our respondents are CIS white females. As studies have shown, women tend to be more empathetic than men [@Hoffman_emp_1977] so this may influence our results.
   
 Future research can use other questions to measure participant opinion towards the vignette character, using statements such as such as “I am willing to be friends with Sam”. In our study, we chose a gender-neutral name for our vignette character. In future studies, researchers can investigate how a vignette character's gender may influence participant attitudes towards their behavior, especially when such behavior is related to traditional gender norms, as cooking and cleaning is often considered a female responsibility. Other areas of exploration can include changing the vignette character's racial identity. Future researchers can also investigate if age had a moderating effect on respondents attitudes toward varying degrees of negative behavior, especially ones that may put others in danger. For example, we may compare milder scenarios where both younger and older Sam simply made a mess in the kitchen with more extreme scenarios such as both versions of Sam causes an accidental fire in the kitchen. This way, we can investigate how perceptions of responsibility, tolerance, and forgiveness are related to age and degrees of negative behaviors. 
 
